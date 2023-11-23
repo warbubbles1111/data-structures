@@ -114,8 +114,7 @@ class List {
         List(const List& other) : _size(0) {
             head.next = &tail; tail.prev = &head;
 
-            const_iterator it;
-            for (it = other.begin(); it != other.end(); it++) {
+            for (const_iterator it = other.begin(); it != other.end(); it++) {
                 push_back(*it);
             }
         }
@@ -143,8 +142,7 @@ class List {
             if (this != &other) {
                 clear();
         
-                const_iterator it;
-                for (it = other.begin(); it != other.end(); it++) {
+                for (const_iterator it = other.begin(); it != other.end(); it++) {
                     push_back(*it);
                 }
             }
@@ -170,6 +168,7 @@ class List {
                 other.head.next = &(other.tail); 
                 other.tail.prev = &(other.head);
             }
+
             return *this;
         }
 
@@ -178,6 +177,10 @@ class List {
             clear();
         }
 
+        void clear() noexcept {
+            while(!empty()) { pop_back(); }
+        }
+        
         reference front() { return head.next->data; }
 
         const_reference front() const { return head.next->data; } 
@@ -203,11 +206,6 @@ class List {
         bool empty() const noexcept { return _size == 0; }
 
         size_type size() const noexcept { return _size; }
-
-        void clear() noexcept {
-            while(!empty()) { pop_back(); }
-        }
-
 
         iterator insert(const_iterator pos, const T& value) {
             Node* temp = pos.node;
