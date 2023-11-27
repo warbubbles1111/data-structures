@@ -1,11 +1,11 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <algorithm> // std::random_access_iterator_tag
-#include <cstddef> // size_t
-#include <stdexcept> // std::out_of_range
-#include <type_traits> // std::is_same
-#include <utility> // std::move
+#include <algorithm> 
+#include <cstddef> 
+#include <stdexcept> 
+#include <type_traits> 
+#include <utility> 
 
 template <class T>
 class Vector {
@@ -18,49 +18,65 @@ class Vector {
 
         void grow() { 
             _capacity = (_capacity == 0) ? 1 : 2 * _capacity;
-            T* temp = new T[_capacity];
+            T* newArray = new T[_capacity] {};
 
-            for (size_t i = 0; i < _size; ++i) { temp[i] = std::move(array[i]); }
+            for (size_t i = 0; i < _size; ++i) { 
+                newArray[i] = std::move(array[i]);
+            }
 
             delete[] array;
-            array = temp;
+            array = newArray;
         }
 
     public:
-        Vector() noexcept : _capacity(0),  _size(0) { array = nullptr; }
+        Vector() noexcept : _capacity(0),  _size(0) { 
+            array = nullptr; 
+        }
 
         Vector(size_t count, const T& value) : _capacity(count), _size(count) { 
-            array = new T[count];
-            for (size_t i = 0; i < count; ++i) {
+            array = new T[_capacity] {};
+
+            for (size_t i = 0; i < _size; i++) {
                 array[i] = value;
             } 
         }
 
-        explicit Vector(size_t count) : _capacity(count), _size(count) { array = new T[count] {}; }
+        explicit Vector(size_t count) : _capacity(count), _size(count) { 
+            array = new T[_capacity] {}; 
+        }
 
         // Copy constructor
-        Vector(const Vector& other) : _capacity(other.capacity()), _size(other._size) {
-            array = new T[_capacity];
+        Vector(const Vector& other) : _capacity(other.capacity()), _size(other.size()) {
+            array = new T[_capacity] {};
 
-            for (size_t i = 0; i < _size; ++i) { array[i] = other.at(i); }
+            for (size_t i = 0; i < _size; i++) { 
+                array[i] = other.at(i); 
+            }
+        }
+
+        void swap(Vector & src, Vector & dst) {
+            std::swap(src._size, dst._size);
+            std::swap(src._capacity, dst._capacity);
+            std::swap(src.array, dst.array);
         }
 
         // Move constructor
-        Vector(Vector&& other) noexcept : _capacity(other._capacity), _size(other._size) {
-            array = other.array;
-            other._capacity = 0; other._size = 0;
-            other.array = nullptr;
+        Vector(Vector&& other) noexcept : _capacity(0), _size(0), array(nullptr) {
+            swap(*this, other);
         }
 
         // Copy assignment operator
         Vector& operator=(const Vector& other) {
             if (this != &other) {
                 delete[] array;
-                _capacity = other._capacity; _size = other._size;
+                _capacity = other._capacity; 
+                _size = other._size;
 
-                array = new T[_capacity];
+                array = new T[_capacity] {};
 
-                for (size_t i = 0; i < _size; ++i) { array[i] = other.at(i); }
+                for (size_t i = 0; i < _size; i++) { 
+                    array[i] = other.at(i);
+                }
             }
             return *this;
         }
@@ -69,10 +85,9 @@ class Vector {
         Vector& operator=(Vector&& other) noexcept {
             if (this != &other) {
                 delete[] array;
-                _capacity = other._capacity; _size = other._size;
-                array = other.array;
-                other._capacity = other._size = 0;
-                other.array = nullptr;
+                array = nullptr;
+                _capacity = _size = 0;
+                swap(*this, other);
             }
             return *this;
         }
@@ -136,7 +151,7 @@ class Vector {
 
             if (_size >= _capacity) { grow(); }
 
-            for (size_t i = _size; i > position; --i) { 
+            for (size_t i = _size; i > position; i--) { 
                 array[i] = std::move(array[i-1]);
             }
 
@@ -150,7 +165,7 @@ class Vector {
 
             if (_size >= _capacity) { grow(); }
 
-            for (size_t i = _size; i > position; --i) { 
+            for (size_t i = _size; i > position; i--) { 
                 array[i] = std::move(array[i-1]);
             }
 
@@ -166,10 +181,10 @@ class Vector {
 
             while (_size + count > _capacity) { grow(); }
 
-            for (size_t i = _size + count - 1; i > position + count - 1; --i) {
+            for (size_t i = _size + count - 1; i > position + count - 1; i--) {
                 array[i] = std::move(array[i-count]);
             }
-            for (size_t i = position; i < position + count; ++i) {
+            for (size_t i = position; i < position + count; i++) {
                 array[i] = value;
             }
 
@@ -181,7 +196,11 @@ class Vector {
         iterator erase(iterator pos) {
             iterator it = pos;
             _size--;
-            while (it != end()) { *(it) = std::move(*(it + 1)); it++; }
+
+            while (it != end()) { 
+                *(it) = std::move(*(it + 1)); 
+                it++; 
+            }
 
             return pos;
         }
@@ -193,7 +212,11 @@ class Vector {
         
             iterator it = first;
             _size -= count;
-            while (it != end()) { *(it) = std::move(*(it + count)); it++; }
+
+            while (it != end()) { 
+                *(it) = std::move(*(it + count)); 
+                it++; 
+            }
 
             return first;
         }
@@ -228,7 +251,7 @@ class Vector {
         iterator& operator++() noexcept { ptr++; return *this; }
 
         // Postfix Increment: a++
-        iterator operator++(int) noexcept { iterator result = *this; ptr++; return reuslt; }
+        iterator operator++(int) noexcept { iterator result = *this; ptr++; return result; }
 
         // Prefix Decrement: --a
         iterator& operator--() noexcept { ptr--; return *this; }

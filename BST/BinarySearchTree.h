@@ -28,11 +28,9 @@ class BinarySearchTree {
             BinaryNode* left;
             BinaryNode* right;
          
-            BinaryNode(const pair & x, BinaryNode *lt, BinaryNode *rt)
-            : element{x}, left{lt}, right{rt} {}
+            BinaryNode(const pair & x, BinaryNode *lt, BinaryNode *rt) : element{x}, left{lt}, right{rt} {}
             
-            BinaryNode(pair && x, BinaryNode *lt, BinaryNode *rt)
-            : element{std::move(x)}, left{lt}, right{rt} {}
+            BinaryNode(pair && x, BinaryNode *lt, BinaryNode *rt) : element{std::move(x)}, left{lt}, right{rt} {}
         };
 
     public:
@@ -51,13 +49,14 @@ class BinarySearchTree {
             _root = clone(rhs._root);
         }
 
+        void swap(BinarySearchTree & src, BinarySearchTree & dst) {
+            std::swap(src._size, dst._size);
+            std::swap(src._root, dst._root);
+        }
+
         // Move constructor
         BinarySearchTree(BinarySearchTree && rhs) : _root(nullptr), _size(rhs._size), comp(Comparator{}) {
-            if (_size == 0) { return; }
-
-            _root = rhs._root;
-            rhs._size = 0;
-            rhs._root = nullptr;
+            swap(*this, rhs);
         }
 
         // Copy assignment operator
@@ -74,14 +73,9 @@ class BinarySearchTree {
         BinarySearchTree & operator=(BinarySearchTree && rhs) {
             if (this != &rhs) {
                 clear();
-
-                _size = rhs._size;
-
-                if (_size == 0) { return *this; }
-
-                _root = rhs._root;
-                rhs._size = 0;
-                rhs._root = nullptr;
+                _size = 0;
+                _root = nullptr;
+                swap(*this, rhs);
             }
             return *this; 
         }

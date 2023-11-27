@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef> // size_t
-#include <iterator> // std::bidirectional_iterator_tag
-#include <type_traits> // std::is_same, std::enable_if
-
+#include <cstddef> 
+#include <iterator> 
+#include <type_traits> 
 
 template <class T>
 class List {
@@ -89,7 +88,8 @@ class List {
 
     public:
         List() : _size(0) { 
-            head.next = &tail; tail.prev = &head; 
+            head.next = &tail; 
+            tail.prev = &head; 
         } 
             
         List(size_type count, const T& value) : _size(0) {  
@@ -106,7 +106,7 @@ class List {
             tail.prev = &head;
 
             for (size_t i = 0; i < count; i++) { 
-                push_back({}); 
+                push_back(T()); 
             }
         }
 
@@ -218,7 +218,6 @@ class List {
             return iterator(node);
         }
 
-
         iterator insert(const_iterator pos, T&& value) {
             Node* temp = pos.node;
             Node* node = new Node(std::move(value), temp->prev, temp);
@@ -229,7 +228,6 @@ class List {
 
             return iterator(node);
         }
-
 
         iterator erase(const_iterator pos) {
             Node* temp = pos.node;
@@ -243,7 +241,6 @@ class List {
             return iterator(after);
         }
 
-
         void push_back(const T& value) {
             Node* node = new Node(value, tail.prev, &tail);
             node->prev->next = node;
@@ -251,7 +248,6 @@ class List {
 
             _size++;
         }   
-
 
         void push_back(T&& value) {
             Node* node = new Node(std::move(value), tail.prev, &tail);
@@ -296,8 +292,6 @@ class List {
             _size--;
         }
     
-    
-    // These methods provide the non-const complement of the const_iterator methods provided above.
     iterator insert(iterator pos, const T & value) { 
         return insert((const_iterator &) (pos), value);
     }
@@ -312,7 +306,7 @@ class List {
 };
 
 
-// These methods provide an overload to compare const and non-const iterators safely.
+
 namespace {
     template<typename Iter, typename ConstIter, typename T>
     using enable_for_list_iters = typename std::enable_if<
