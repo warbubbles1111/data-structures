@@ -4,7 +4,8 @@
 #include <iterator> 
 #include <type_traits> 
 
-template <class T>
+template
+ <class T>
 class List {
 
     private:
@@ -171,6 +172,7 @@ class List {
 
             return *this;
         }
+
 
         // Destructor     
         ~List() { 
