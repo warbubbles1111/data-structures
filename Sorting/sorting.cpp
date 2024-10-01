@@ -185,5 +185,4 @@ void quick_sort(T* array, int left, int right) {
 }
 
 
-
 int main() {}
