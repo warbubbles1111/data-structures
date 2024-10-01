@@ -186,14 +186,4 @@ void quick_sort(T* array, int left, int right) {
 
 
 
-int main() { 
-    int* array = new int[10] {8,4,5,3,1,2,6,7,0,9};
- 
-    quick_sort(array, 0, 9);
-
-    for (size_t i = 0; i < 10; i++) {
-        std::cout << array[i] << " ";
-    }
-
-    std::cout << std::endl;
-}
+int main() {}
